@@ -53,6 +53,16 @@ def prepare(source_file, target_file, source_lang, target_lang, lower=False):
     print("--- Source-Copied Rows Deleted\t\t--> Rows:", df.shape[0])
 
 
+    # Remove HTML and normalize
+    # Use str() to avoid (TypeError: expected string or bytes-like object)
+    # Note: removing tags should be before removing empty cells because some cells might have only tags and become empty.
+
+    df = df.replace(r'<.*?>|&lt;.*?&gt;|&?(amp|nbsp|quot);|{}', ' ', regex=True)
+    df = df.replace(r'  ', ' ', regex=True)  # replace double-spaces with one space
+
+    print("--- HTML Removed\t\t\t--> Rows:", df.shape[0])
+
+
     # Drop too-long rows (source or target)
     # Based on your language, change the values "2" and "200"
     src_wdrex = ' '
@@ -86,16 +96,6 @@ def prepare(source_file, target_file, source_lang, target_lang, lower=False):
     df = df.drop(['Too-Long'], axis = 1)
 
     print("--- Too Long Source/Target Deleted\t--> Rows:", df.shape[0])
-
-
-    # Remove HTML and normalize
-    # Use str() to avoid (TypeError: expected string or bytes-like object)
-    # Note: removing tags should be before removing empty cells because some cells might have only tags and become empty.
-
-    df = df.replace(r'<.*?>|&lt;.*?&gt;|&?(amp|nbsp|quot);|{}', ' ', regex=True)
-    df = df.replace(r'  ', ' ', regex=True)  # replace double-spaces with one space
-
-    print("--- HTML Removed\t\t\t--> Rows:", df.shape[0])
 
 
     # Lower-case the data
