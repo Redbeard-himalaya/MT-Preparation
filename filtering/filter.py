@@ -55,11 +55,25 @@ def prepare(source_file, target_file, source_lang, target_lang, lower=False):
 
     # Drop too-long rows (source or target)
     # Based on your language, change the values "2" and "200"
-    df["Too-Long"] = ((df['Source'].str.count(' ')+1) > (df['Target'].str.count(' ')+1) * 2) |  \
-                     ((df['Target'].str.count(' ')+1) > (df['Source'].str.count(' ')+1) * 2) |  \
-                     ((df['Source'].str.count(' ')+1) > 200) |  \
-                     ((df['Target'].str.count(' ')+1) > 200)
-                
+    src_wdrex = ' '
+    src_wdpad = 1
+    tgt_wdrex = ' '
+    tgt_wdpad = 1
+
+    # https://stackoverflow.com/questions/65475326/count-numbers-of-chinese-characters-for-each-row-of-one-column-in-python
+    if source_lang == 'zh':
+        src_wdrex = '[\u4e00-\u9fff]'
+        src_wdpad = 0
+    elif target_lang == 'zh':
+        tgt_wdrex = '[\u4e00-\u9fff]'
+        tgt_wdpad = 0
+
+    df["Too-Long"] = \
+        ((df['Source'].str.count(src_wdrex)+src_wdpad) > (df['Target'].str.count(tgt_wdrex)+tgt_wdpad) * 2) |  \
+        ((df['Target'].str.count(tgt_wdrex)+tgt_wdpad) > (df['Source'].str.count(src_wdrex)+src_wdpad) * 2) |  \
+        ((df['Source'].str.count(src_wdrex)+src_wdpad) > 200) |  \
+        ((df['Target'].str.count(tgt_wdrex)+tgt_wdpad) > 200)
+
     #display(df.loc[df['Too-Long'] == True]) # display only too long rows
     df = df.set_index(['Too-Long'])
 
