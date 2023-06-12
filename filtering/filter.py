@@ -71,10 +71,10 @@ def prepare(source_file, target_file, source_lang, target_lang, lower=False):
     tgt_wdpad = 1
 
     # https://stackoverflow.com/questions/65475326/count-numbers-of-chinese-characters-for-each-row-of-one-column-in-python
-    if source_lang == 'zh':
+    if source_lang.startswith('zh'):
         src_wdrex = '[\u4e00-\u9fff]'
         src_wdpad = 0
-    elif target_lang == 'zh':
+    elif target_lang.startswith('zh'):
         tgt_wdrex = '[\u4e00-\u9fff]'
         tgt_wdpad = 0
 
