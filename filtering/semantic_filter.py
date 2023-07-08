@@ -1,5 +1,7 @@
 # Command: python3 semantic_filter.py <source_file_path> <target_file_path> <source_lang> <target_lang> <chunk_size> <threshold>
 
+# import numpy first to avoid issue: MKL_THREADING_LAYER=INTEL is incompatible with libgomp.so.1 library
+import numpy
 from sentence_transformers import SentenceTransformer
 from sentence_transformers.util import pytorch_cos_sim
 import torch
